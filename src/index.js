@@ -20,10 +20,12 @@ function forEach(array, fn) {
  */
 function map(array, fn) {
     var result = [];
+
     for (var i = 0; i < array.length; i++) {
         result.push(fn(array[i], i, array))
     }
     return result;
+
 }
 
 /*
@@ -38,7 +40,7 @@ function reduce(array,fn,initial = array[0]){
     for(var i = 0; i < array.length; i++){
         result = fn(result, array[i], i, array);
     }
-    return result
+    return result;
 }
 
 /*
@@ -65,6 +67,11 @@ function upperProps(obj) {
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
 function slice(array, from, to) {
+    var result = [];
+    for( var i = from; i < to; i++) {
+        result.push(array[i]);
+    }
+    return result;
 }
 
 /*
@@ -74,6 +81,11 @@ function slice(array, from, to) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    var newObj = obj;
+    for (var key in obj) {
+        obj[key] = obj[key] * obj[key];
+    }
+    return newObj;
 }
 
 export {
