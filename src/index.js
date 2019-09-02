@@ -35,9 +35,14 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 
-function reduce(array,fn,initial = array[0]){
-    var result = initial;
-    for(var i = 0; i < array.length; i++){
+function reduce(array, fn, initial) {
+    let result = initial;
+    let i = 0;
+    if (!initial) {
+        result = array[0];
+        i = 1;
+    }
+    for ( ;i < array.length; i++) {
         result = fn(result, array[i], i, array);
     }
     return result;
@@ -68,7 +73,7 @@ function upperProps(obj) {
  */
 function slice(array, from, to) {
     var result = [];
-    for( var i = from; i < to; i++) {
+    for (var i = from; i < to; i++) {
         result.push(array[i]);
     }
     return result;
