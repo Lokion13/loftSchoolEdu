@@ -16,27 +16,22 @@
    isAllTrue([1, 2, 3, 4, 5], n => n < 10) // вернет true
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
-function isAllTrue(array, fn = result) {
-    if (!Array.isArray(array) || array.length == 0) {
+function isAllTrue(array, fn) {
+    if (!Array.isArray(array) || array.length === 0) {
         throw new Error('empty array');
-    } else if(typeof v != "function") {
+    } else if(typeof fn !== "function") {
         throw new Error('fn is not a function');
     }
-
-    return result = function(array, foo) {
-        for (var i = 0; i < array.length; i++) {
-            if (foo( arr[i], i, arr)) {
-                return true;
-            }
-        }
-        return false;
-    };
+    for(var i = 0; i < array.length; i++) {
+       if (!fn(array[i])) {return false}
+    }
+    return true;
 }
-try{
-    isAllTrue(array);
-} catch (e) {
-    console.log(e.message);
-}
+// try{
+//     isAllTrue(array);
+// } catch (e) {
+//     console.log(e.message);
+// }
 
 /*
  Задание 2:
@@ -55,7 +50,17 @@ try{
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
 function isSomeTrue(array, fn) {
+    if (!Array.isArray(array) || array.length === 0) {
+        throw new Error('empty array');
+    } else if(typeof fn !== "function") {
+        throw new Error('fn is not a function');
+    }
+    for(var i = 0; i < array.length; i++) {
+        if (fn(array[i])) {return true}
+    }
+    return false;
 }
+
 
 /*
  Задание 3:
@@ -68,8 +73,35 @@ function isSomeTrue(array, fn) {
  3.3: Необходимо выбрасывать исключение в случаях:
    - fn не является функцией (с текстом "fn is not a function")
  */
+// function returnBadArguments(fn) {
+//     if(typeof fn !== "function") {
+//         throw new Error('fn is not a function');
+//     }
+//     var array = [];
+//     for(var i = 0; i < arguments.length; i++) {
+//         // if (!fn(args[i])) {return array.push(args[i])}
+//         if (!fn(arguments[i])) {
+//             return array.push(arguments[i])
+//         }
+//     }
+//     return array;
+// }
+
 function returnBadArguments(fn) {
+    if (typeof fn !== 'function' ) {
+        throw new Error('fn is not a function');
+    }
+
+    return [...arguments].slice(1).filter(item =>{
+        try {
+            fn(item);
+        } catch (e) {
+            return item;
+        }
+    });
+
 }
+
 
 /*
  Задание 4:
@@ -88,34 +120,67 @@ function returnBadArguments(fn) {
    - number не является числом (с текстом "number is not a number")
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
-function calculator(number = 0,...args) {
+
+function calculator(number = 0) {
     if (isNaN(number)) {
         throw new Error('number is not a number');
     }
-    var insideNumberPlus = number;
-    var insideNumberMinus = number;
-    var obj = {};
-    for (var i = 0; i < args.length; i++) {
-        insideNumberPlus = insideNumberPlus + args[i];
-        insideNumberMinus = insideNumberMinus - args[i];
-        if (args[i] == 0) {
-            throw new Error('division by 0');
-            obj.div = number/args[0];
+
+    function _sum() {
+
+        let result = number;
+
+        for (let i = 0; i < arguments.length; i++) {
+            result = result + arguments[i]
         }
-        obj.mul = number * args[0];
+        return result;
     }
-    obj.sum = insideNumberPlus;
-    obj.dif = insideNumberMinus;
 
-    return obj;
+    function _dif() {
+
+        let result = number;
+
+        for (let i = 0; i < arguments.length; i++) {
+            result = result - arguments[i]
+        }
+        return result;
+    }
+
+    function _div() {
+
+        let result = number;
+
+        for (let i = 0; i < arguments.length; i++) {
+            try {
+                if (arguments[i] === 0) {
+                    throw new Error('division by 0')
+                }
+            } catch (e) {
+                console.log(e.message);
+            }
+
+            result = result / arguments[i]
+        }
+        return result;
+    }
+
+    function _mul() {
+
+        let result = number;
+
+        for (let i = 0; i < arguments.length; i++) {
+            result = result * arguments[i]
+        }
+        return result;
+    }
+
+    return {
+        sum: _sum,
+        dif: _dif,
+        div: _div,
+        mul: _mul
+    }
 }
-try{
-    calculator();
-} catch (e) {
-    console.log(e.message);
-}
-
-
 /* При решении задач, пострайтесь использовать отладчик */
 
 export {
